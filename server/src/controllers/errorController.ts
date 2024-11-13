@@ -25,6 +25,16 @@ const sendErrorProd = (err: AppError, res: Response) => {
   }
 };
 
+const handleCastErrorDB = (err: { path: string; value: string }) => {
+  return new AppError(`Invalid ${err.path}: ${err.value}`, 400);
+};
+
+const handleDuplicationErrorDB = (err: { keyValue: { name?: any } }) => {
+  if (Object.keys(err.keyValue)[0] === 'email')
+    return new AppError(`User with that email already exists`, 400);
+  return new AppError(`${err.keyValue.name} already exists`, 400);
+};
+
 const handleJWTError = () =>
   new AppError(`Invalid token. Please log in again!`, 401);
 
@@ -43,6 +53,8 @@ const errorHandler = (
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else {
+    if (err.name === 'CastError') err = handleCastErrorDB(err);
+    if (err.code === 11000) err = handleDuplicationErrorDB(err);
     if (err.name === 'JsonWebTokenError') err = handleJWTError();
     if (err.name === 'TokenExpiredError') err = handleExpiredTokenError();
     sendErrorProd(err, res);

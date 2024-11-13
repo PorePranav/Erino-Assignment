@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import User from './../models/userModel';
-import { IUser } from './../models/userModel';
+import User, { IUser } from './../models/userModel';
 import catchAsync from './../utils/catchAsync';
 import AppError from '../utils/AppError';
 import { loginSchema, signupSchema } from '../validators/authValidations';
