@@ -1,4 +1,11 @@
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 import app from './app';
+
+const DB = process.env.DATABASE_URL as string;
 
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -6,6 +13,7 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
+mongoose.connect(DB).then(() => console.log('DB Connection Successful!'));
 const port: number = parseInt(process.env.PORT as string, 10) || 3000;
 
 const server = app.listen(port, () => {
@@ -19,3 +27,5 @@ process.on('unhandledRejection', (err: Error) => {
     process.exit(1);
   });
 });
+
+module.exports = app;
