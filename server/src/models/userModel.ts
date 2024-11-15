@@ -46,6 +46,20 @@ userSchema.methods.correctPassword = async function (
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
+userSchema.set('toJSON', {
+  transform: (_, ret) => {
+    delete ret.__v;
+    return ret;
+  },
+});
+
+userSchema.set('toObject', {
+  transform: (_, ret) => {
+    delete ret.__v;
+    return ret;
+  },
+});
+
 const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;
