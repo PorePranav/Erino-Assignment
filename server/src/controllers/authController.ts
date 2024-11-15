@@ -108,9 +108,21 @@ export const login = catchAsync(
   }
 );
 
-export const logout = (req: Request, res: Response): void => {
-  res.clearCookie('jwt').status(200).json({
-    status: 'success',
-    data: null,
-  });
-};
+export const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    res.clearCookie('jwt').status(200).json({
+      status: 'success',
+      data: null,
+    });
+  }
+);
+
+export const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.user!._id);
+    res.status(200).json({
+      status: 'success',
+      data: user,
+    });
+  }
+);
